@@ -51,7 +51,10 @@
 
         <label for="freeViewExpiry">Free View Expiry:</label>
         <input type="date" id="freeViewExpiry" name="freeViewExpiry"/><br/>
-
+        
+		<label for="premiumCheckbox">Is Premium:</label>
+        <input type="checkbox" id="premiumCheckbox" name="premiumCheckbox"/><br/>
+	
         <input type="submit" value="Submit"/>
     </form>
     <form action="viewAll" method="get" style="text-align: center; margin-top: 20px;">

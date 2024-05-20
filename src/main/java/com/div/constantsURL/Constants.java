@@ -24,6 +24,7 @@ public class Constants {
     public static final String EDIT_DETAIL = "/editDetail";
     public static final String UPDATE_DETAILS = "/updateDetails";
     public static final String DELETE_DETAIL = "/deleteDetail";
+    public static final String TRIGGER_SCHEDULER="/trigger-scheduler";
     
     // FormDetailController messages
     public static final String MSG_USER_NOT_LOGGED_IN = "User is not logged in or session has expired.";

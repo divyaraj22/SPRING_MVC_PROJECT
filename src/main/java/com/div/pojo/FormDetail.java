@@ -17,53 +17,64 @@ import javax.validation.constraints.NotNull;
 public class FormDetail {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-    @Column(name = "title")
-    private String title;
+	@Column(name = "title")
+	private String title;
 
-    @Column(name = "speakers")
-    private String speakers;
+	@Column(name = "speakers")
+	private String speakers;
 
-    @Column(name = "publicURL")
-    private String publicURL;
+	@Column(name = "publicURL")
+	private String publicURL;
 
-    @Column(name = "video_date")
-    private Date videoDate;
+	@Column(name = "video_date")
+	private Date videoDate;
 
-    @Column(name = "published_date")
-    private Date publishedDate;
+	@Column(name = "published_date")
+	private Date publishedDate;
 
-    @Column(name = "description")
-    private String description;
+	@Column(name = "description")
+	private String description;
 
-    @Column(name = "synopsis")
-    private String synopsis;
+	@Column(name = "synopsis")
+	private String synopsis;
 
-    @Lob
-    @Column(name = "banner", columnDefinition = "LONGBLOB")
-    private byte[] banner;
+	@Lob
+	@Column(name = "banner", columnDefinition = "LONGBLOB")
+	private byte[] banner;
 
-    @Column(name = "video_url")
-    private String videoUrl;
+	@Column(name = "video_url")
+	private String videoUrl;
 
-    @Column(name = "preview_video_url")
-    private String previewVideoUrl;
+	@Column(name = "preview_video_url")
+	private String previewVideoUrl;
 
-    @NotNull(message = "Access category date is required")
-    @Column(name = "access_category")
-    private String accessCategory;
+	@NotNull(message = "Access category date is required")
+	@Column(name = "access_category")
+	private String accessCategory;
 
-    @Column(name = "free_view_expiry")
-    private Date freeViewExpiry;
+	@Column(name = "free_view_expiry")
+	private Date freeViewExpiry;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
-    private String contentType;
-	
+	private String contentType;
+
+	@Column(name = "is_premium")
+	private boolean isPremium;
+
+	public boolean isPremium() {
+		return isPremium;
+	}
+
+	public void setPremium(boolean isPremium) {
+		this.isPremium = isPremium;
+	}
+
 	public String getContentType() {
 		return contentType;
 	}
@@ -184,10 +195,10 @@ public class FormDetail {
 		this.user = user;
 	}
 
-	
 	public FormDetail(int id, String title, String speakers, String publicURL, Date videoDate, Date publishedDate,
-			String description, String synopsis, byte[] banner, String previewVideoUrl, String videoUrl,
-			String accessCategory, Date freeViewExpiry, User user,String contentType) {
+			String description, String synopsis, byte[] banner, String videoUrl, String previewVideoUrl,
+			@NotNull(message = "Access category date is required") String accessCategory, Date freeViewExpiry,
+			User user, String contentType, boolean isPremium) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -198,16 +209,17 @@ public class FormDetail {
 		this.description = description;
 		this.synopsis = synopsis;
 		this.banner = banner;
-		this.previewVideoUrl = previewVideoUrl;
 		this.videoUrl = videoUrl;
+		this.previewVideoUrl = previewVideoUrl;
 		this.accessCategory = accessCategory;
 		this.freeViewExpiry = freeViewExpiry;
 		this.user = user;
-		this.contentType=contentType;
+		this.contentType = contentType;
+		this.isPremium = isPremium;
 	}
-	
+
 	public FormDetail() {
-		
+
 	}
 
 }

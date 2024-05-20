@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import="com.div.pojo.User" %>
+<%@page isELIgnored="false"%>
 <%@ page import="com.div.util.ImageUtil"%>
-<%@ page isELIgnored="false"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,14 +52,18 @@
         <label for="previewVideoUrl">Preview Video URL:</label>
         <input type="text" id="previewVideoUrl" name="previewVideoUrl" value="${formDetail.previewVideoUrl}"/><br/>
         
-        <label for="accessCategory">Access Category:</label>
-        <select id="accessCategory" name="accessCategory" required>
-            <option value="free" ${formDetail.accessCategory == 'free' ? 'selected' : ''}>Free</option>
-            <option value="paid" ${formDetail.accessCategory == 'paid' ? 'selected' : ''}>Paid</option>
-        </select><br/>
+       <label for="accessCategory">Access Category:</label>
+	   <select id="accessCategory" name="accessCategory" required>
+       <option value="free" ${formDetail.accessCategory == 'free' ? 'selected' : ''}>Free</option>
+       <option value="Premium" ${formDetail.accessCategory == 'Premium' ? 'selected' : ''}>Premium</option>
+	   </select><br/>
+
         
         <label for="freeViewExpiry">Free View Expiry:</label>
         <input type="date" id="freeViewExpiry" name="freeViewExpiry" value="${formDetail.freeViewExpiry}"/><br/>
+        
+        <label for="isPremium">Premium:</label>
+        <input type="checkbox" id="isPremium" name="isPremium" ${formDetail.isPremium() ? 'checked' : ''}/><br/>
         
         <input type="submit" value="Submit"/>
     </form>

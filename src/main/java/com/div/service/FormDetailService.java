@@ -1,5 +1,6 @@
 package com.div.service;
 
+import java.sql.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import com.div.pojo.User;
 @Transactional
 public class FormDetailService {
 
-    @Autowired
+	@Autowired
     private FormDetailDAO formDetailDAO;
 
     public List<FormDetail> getAllFormDetails() {
@@ -35,7 +36,11 @@ public class FormDetailService {
         formDetailDAO.deleteById(id);
     }
 
-	public List<FormDetail> getFormDetailByUser(User user) {
-		return formDetailDAO.findByUser(user);
-	}
+    public List<FormDetail> getFormDetailByUser(User user) {
+        return formDetailDAO.findByUser(user);
+    }
+
+    public List<FormDetail> getFreeAccessWithExpiry(Date today) {
+        return formDetailDAO.findFreeAccessWithExpiry(today);
+    }
 }
