@@ -14,38 +14,38 @@ This project is a CRUD application built using Spring MVC. It demonstrates the u
 ## Installation
 1. Clone the repository:
    ```sh
-   git clone https://github.com/divyaraj22/SPRING_MVC_PROJECT.git
-2.cd SPRING_MVC_PROJECT
-3.mvn clean install
-4.mvn spring-boot:run
+   git clone https://github.com/divyaraj22/SPRING_MVC_PROJECT.git<br>
+2.cd SPRING_MVC_PROJECT<br>
+3.mvn clean install<br>
+4.mvn spring-boot:run<br>
 
 ## Usage
-Once the application is running, you can access it at http://localhost:8080. Here are some example endpoints:
+Once the application is running, you can access it at http://localhost:8080. Here are some example endpoints:<br>
+<br>
+• Create a new record: POST /api/records<br>
+• Retrieve all records: GET /api/records<br>
+• Retrieve a single record: GET /api/records/{id}<br>
+• Update a record: PUT /api/records/{id}<br>
+• Delete a record: DELETE /api/records/{id}<br>
 
-• Create a new record: POST /api/records
-• Retrieve all records: GET /api/records
-• Retrieve a single record: GET /api/records/{id}
-• Update a record: PUT /api/records/{id}
-• Delete a record: DELETE /api/records/{id}
+## Features<br>
+• CRUD Operations: Create, Read, Update, and Delete records<br>
+• Spring MVC: Simplifies the setup and development of new Spring applications<br>
+• Hibernate: ORM tool for data persistence<br>
+• Spring Data JPA: Abstraction over JPA for database interactions<br>
 
-## Features
-• CRUD Operations: Create, Read, Update, and Delete records
-• Spring MVC: Simplifies the setup and development of new Spring applications
-• Hibernate: ORM tool for data persistence
-• Spring Data JPA: Abstraction over JPA for database interactions
-
-## Contributing
-Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure your code follows the existing style and includes tests where applicable.
-
-## Fork the repository
-1.Create your feature branch (git checkout -b feature/AmazingFeature)
-2.Commit your changes (git commit -m 'Add some AmazingFeature')
-3.Push to the branch (git push origin feature/AmazingFeature)
-4.Open a pull request
+## Contributing<br>
+Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure your code follows the existing style and includes tests where applicable.<br>
+<br>
+## Fork the repository<br>
+1.Create your feature branch (git checkout -b feature/AmazingFeature)<br>
+2.Commit your changes (git commit -m 'Add some AmazingFeature')<br>
+3.Push to the branch (git push origin feature/AmazingFeature)<br>
+4.Open a pull request<br>
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.<br>
 
-## Contact
-Divyaraj - divyarajdodiya23@gmail.com
-Project Link: https://github.com/divyaraj22/SPRING_MVC_PROJECT
+## Contact<br>
+Divyaraj - divyarajdodiya23@gmail.com<br>
+Project Link: https://github.com/divyaraj22/SPRING_MVC_PROJECT<br>
