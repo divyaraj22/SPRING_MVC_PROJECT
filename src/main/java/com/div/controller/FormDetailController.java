@@ -1,19 +1,13 @@
 package com.div.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -38,7 +32,6 @@ public class FormDetailController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         binder.registerCustomEditor(java.sql.Date.class, new SqlDateEditor("yyyy-MM-dd"));
         binder.registerCustomEditor(byte[].class, new MultipartFileEditor());
     }
@@ -50,13 +43,9 @@ public class FormDetailController {
     }
 
     @PostMapping(Constants.ADD_DETAILS)
-    public String saveFormDetail(@Valid @ModelAttribute("formDetail") FormDetail formDetail, BindingResult result,
+    public String saveFormDetail(@Valid @ModelAttribute("formDetail") FormDetail formDetail,
                                  @RequestParam("banner") MultipartFile bannerFile, HttpSession session) throws IOException {
         logger.info("POST request to save form detail: {}");
-        if (result.hasErrors()) {
-            logger.warn("Form detail has validation errors: {}");
-            return Constants.VIEW_FORM;
-        }
 
         User user = (User) session.getAttribute("loggedInUser");
         if (user == null) {
@@ -72,15 +61,6 @@ public class FormDetailController {
                 byte[] imageData = bannerFile.getBytes();
                 formDetail.setBanner(imageData);
                 formDetail.setContentType(contentType);
-
-                Path uploadDir = Paths.get("uploaded-images");
-                if (!Files.exists(uploadDir)) {
-                    Files.createDirectories(uploadDir);
-                }
-
-                String originalFilename = bannerFile.getOriginalFilename();
-                Path uploadPath = uploadDir.resolve(originalFilename);
-                Files.write(uploadPath, imageData);
             } else {
                 logger.warn(Constants.MSG_INVALID_FILE_TYPE);
             }
@@ -124,7 +104,7 @@ public class FormDetailController {
     }
 
     @PostMapping(Constants.UPDATE_DETAILS)
-    public String updateDetails(HttpServletRequest request, @ModelAttribute FormDetail formDetail,
+    public String updateDetails(@ModelAttribute FormDetail formDetail,
                                 @RequestParam("banner") MultipartFile banner, HttpSession session) throws IOException {
         logger.info("POST request to update form detail with ID: {}");
 

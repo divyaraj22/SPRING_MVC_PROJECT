@@ -35,7 +35,7 @@
         <textarea id="synopsis" name="synopsis"></textarea><br/>
 
         <label for="banner">Banner:</label>
-        <input type="file" id="banner" name="banner"/><br/>
+        <input type="file" id="banner" name="banner" accept="image/jpeg, image/png, image/jpg"/><br/>
 
         <label for="videoUrl">Video URL:</label>
         <input type="text" id="videoUrl" name="videoUrl"/><br/>
