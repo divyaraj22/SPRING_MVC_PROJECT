@@ -14,7 +14,7 @@ This project is a CRUD application built using Spring MVC. It demonstrates the u
 ## Installation
 1. Clone the repository:
    ```sh
-   git clone https://github.com/divyaraj22/SPRING_MVC_PROJECT.git<br>
+   git clone https://github.com/divyaraj22/SPRING_MVC_PROJECT.git
 2.cd SPRING_MVC_PROJECT<br>
 3.mvn clean install<br>
 4.mvn spring-boot:run<br>
