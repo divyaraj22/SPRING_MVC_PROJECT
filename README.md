@@ -19,7 +19,7 @@ This project is a CRUD application built using Spring MVC. It demonstrates the u
 3.mvn clean install
 4.mvn spring-boot:run
 
-Usage
+## Usage
 Once the application is running, you can access it at http://localhost:8080. Here are some example endpoints:
 
 • Create a new record: POST /api/records
@@ -28,24 +28,24 @@ Once the application is running, you can access it at http://localhost:8080. Her
 • Update a record: PUT /api/records/{id}
 • Delete a record: DELETE /api/records/{id}
 
-Features
+## Features
 • CRUD Operations: Create, Read, Update, and Delete records
 • Spring MVC: Simplifies the setup and development of new Spring applications
 • Hibernate: ORM tool for data persistence
 • Spring Data JPA: Abstraction over JPA for database interactions
 
-Contributing
+## Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure your code follows the existing style and includes tests where applicable.
 
-Fork the repository
+## Fork the repository
 1.Create your feature branch (git checkout -b feature/AmazingFeature)
 2.Commit your changes (git commit -m 'Add some AmazingFeature')
 3.Push to the branch (git push origin feature/AmazingFeature)
 4.Open a pull request
 
-License
+## License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-Contact
+## Contact
 Divyaraj - divyarajdodiya23@gmail.com
 Project Link: https://github.com/divyaraj22/SPRING_MVC_PROJECT
