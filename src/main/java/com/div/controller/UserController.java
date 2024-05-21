@@ -11,35 +11,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.div.service.UserService;
 import com.div.constantsURL.Constants;
-import com.div.pojo.User;
+import com.div.dto.UserDTO;
 import javax.servlet.http.HttpSession;
 
 @Controller
 public class UserController {
 
-	public final static Logger logger = Logger.getLogger(UserController.class);
-	
+    public final static Logger logger = Logger.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
 
     @GetMapping(Constants.GET_SIGNUP)
     public String showSignUpForm(Model model) {
         logger.info("GET request to show sign up form");
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserDTO());
         return Constants.VIEW_SIGNUP;
     }
 
     @PostMapping(Constants.POST_SIGNUP)
-    public String saveUser(@ModelAttribute("user") User user) {
+    public String saveUser(@ModelAttribute("user") UserDTO userDto) {
         logger.info("POST request to save user: {}");
-        userService.saveUser(user);
+        userService.saveUser(userDto);
         return Constants.VIEW_LOGIN;
     }
 
     @GetMapping(Constants.LOGIN)
     public String showLoginForm(Model model) {
         logger.info("GET request to show login form");
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserDTO());
         return Constants.VIEW_LOGIN;
     }
 
@@ -47,15 +47,15 @@ public class UserController {
     public String loginUser(@RequestParam String email, @RequestParam String password, ModelMap model,
                             HttpSession session) {
         logger.info("POST request to login user with email: {}");
-        User user = userService.findByEmail(email);
-        if (user == null) {
+        UserDTO userDto = userService.findByEmail(email);
+        if (userDto == null) {
             logger.warn("Login attempt with invalid email: {}");
             model.addAttribute("err", Constants.ERR_INVALID_EMAIL);
         } else {
-            if (user.getPassword().equals(password)) {
+            if (userDto.getPassword().equals(password)) {
                 logger.info("User logged in successfully: {}");
-                session.setAttribute("loggedInUser", user);
-                model.addAttribute("user", user);
+                session.setAttribute("loggedInUser", userDto);
+                model.addAttribute("user", userDto);
                 return Constants.VIEW_FORM;
             } else {
                 logger.warn("Login attempt with invalid password for email: {}");

@@ -1,14 +1,11 @@
 package com.div.service;
 
 import java.util.List;
-
 import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.div.dao.UserDAO;
-import com.div.pojo.User;
+import com.div.dto.UserDTO;
 
 @Service
 @Transactional
@@ -17,27 +14,27 @@ public class UserService {
     @Autowired
     private UserDAO userDAO;
 
-    public List<User> getAllUsers() {
-        return userDAO.findAll();
+    public List<UserDTO> getAllUsers() {
+        return userDAO.findAllDTO();
     }
 
-    public User getUserById(int id) {
-        return userDAO.findone(id);
+    public UserDTO getUserById(int id) {
+        return userDAO.findOneDTO(id);
     }
 
-    public void saveUser(User user) {
-        userDAO.save(user);
+    public void saveUser(UserDTO userDto) {
+        userDAO.save(userDto);
     }
 
-    public void updateUser(User user) {
-        userDAO.update(user);
+    public void updateUser(UserDTO userDto) {
+        userDAO.update(userDto);
     }
 
     public void deleteUser(int id) {
-        userDAO.deleteById(id);
+        userDAO.deleteByIdDTO(id);
     }
 
-	public User findByEmail(String email) {
-		return userDAO.findByEmail(email);
-	}
+    public UserDTO findByEmail(String email) {
+        return userDAO.findByEmail(email);
+    }
 }

@@ -5,21 +5,21 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class GenericDAO<T,ID extends Serializable>{
+public abstract class GenericDAO<T, ID extends Serializable> {
 
-	private final Class<T> entityClass;
-	
-	@Autowired
+    private final Class<T> entityClass;
+
+    @Autowired
     protected SessionFactory sessionFactory;
 
     protected GenericDAO(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
-    
-    public T findone(ID id) {
-    	return sessionFactory.getCurrentSession().get(entityClass,id);
+
+    public T findOne(ID id) {
+        return sessionFactory.getCurrentSession().get(entityClass, id);
     }
-    
+
     public List<T> findAll() {
         return sessionFactory.getCurrentSession().createQuery("from " + entityClass.getName(), entityClass).list();
     }
@@ -37,7 +37,7 @@ public abstract class GenericDAO<T,ID extends Serializable>{
     }
 
     public void deleteById(ID entityId) {
-        T entity = findone(entityId);
+        T entity = findOne(entityId);
         delete(entity);
     }
 }

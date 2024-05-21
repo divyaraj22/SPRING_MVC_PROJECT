@@ -2,6 +2,8 @@ package com.div.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -16,8 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import com.div.pojo.FormDetail;
-import com.div.pojo.User;
+import com.div.dto.FormDetailDTO;
+import com.div.dto.UserDTO;
 import com.div.constantsURL.Constants;
 import com.div.service.FormDetailService;
 import com.div.service.SchedulerService;
@@ -55,33 +57,33 @@ public class FormDetailController {
 	}
 
 	@PostMapping(Constants.ADD_DETAILS)
-	public String saveFormDetail(@Valid @ModelAttribute("formDetail") FormDetail formDetail,
+	public String saveFormDetail(@Valid @ModelAttribute("formDetail") FormDetailDTO formDetailDto,
 			@RequestParam("banner") MultipartFile bannerFile,
 			@RequestParam(value = "premiumCheckbox", required = false) boolean isPremium, HttpSession session)
 			throws IOException {
 		logger.info("POST request to save form detail: {}");
 
-		User user = (User) session.getAttribute("loggedInUser");
-		if (user == null) {
+		UserDTO userDto = (UserDTO) session.getAttribute("loggedInUser");
+		if (userDto == null) {
 			logger.warn(Constants.MSG_USER_NOT_LOGGED_IN);
 			return "redirect:" + Constants.LOGIN;
 		}
 
-		formDetail.setUser(user);
+		formDetailDto.setUser(userDto);
 
 		if (!bannerFile.isEmpty()) {
 			String contentType = bannerFile.getContentType();
 			if (contentType.equals("image/jpeg") || contentType.equals("image/png")) {
 				byte[] imageData = bannerFile.getBytes();
-				formDetail.setBanner(imageData);
-				formDetail.setContentType(contentType);
+				formDetailDto.setBanner(imageData);
+				formDetailDto.setContentType(contentType);
 			} else {
 				logger.warn(Constants.MSG_INVALID_FILE_TYPE);
 			}
 		}
 
-		formDetail.setPremium(isPremium);
-		formDetailService.saveFormDetail(formDetail);
+		formDetailDto.setPremium(isPremium);
+		formDetailService.saveFormDetail(formDetailDto);
 		return "redirect:" + Constants.ADD_DETAILS;
 	}
 
@@ -91,19 +93,38 @@ public class FormDetailController {
 			@RequestParam(value = "sortOrder", required = false) String sortOrder, Model model, HttpSession session) {
 
 		logger.info("GET request to view all details");
-		User user = (User) session.getAttribute("loggedInUser");
-		if (user == null) {
+		UserDTO userDto = (UserDTO) session.getAttribute("loggedInUser");
+		if (userDto == null) {
 			logger.warn(Constants.MSG_USER_NOT_LOGGED_IN);
 			return "redirect:" + Constants.LOGIN;
 		}
 
-		List<FormDetail> details;
+		List<FormDetailDTO> details = formDetailService.getFormDetailByUser(userDto);
+
 		if (searchTitle != null && !searchTitle.isEmpty()) {
-			details = formDetailService.searchFormDetailsByTitle(searchTitle);
-		} else if (sortField != null && sortOrder != null) {
-			details = formDetailService.getSortedFormDetails(sortField, sortOrder);
-		} else {
-			details = formDetailService.getFormDetailByUser(user);
+			details = details.stream()
+					.filter(detail -> detail.getTitle().toLowerCase().contains(searchTitle.toLowerCase()))
+					.collect(Collectors.toList());
+		}
+
+		if (sortField != null && sortOrder != null) {
+			details.sort((detail1, detail2) -> {
+				int comparisonResult = 0;
+				switch (sortField) {
+				case "title":
+					comparisonResult = detail1.getTitle().compareToIgnoreCase(detail2.getTitle());
+					break;
+				case "publicURL":
+					comparisonResult = detail1.getPublicURL().compareToIgnoreCase(detail2.getPublicURL());
+					break;
+				case "accessCategory":
+					comparisonResult = detail1.getAccessCategory().compareToIgnoreCase(detail2.getAccessCategory());
+					break;
+				default:
+					break;
+				}
+				return "desc".equals(sortOrder) ? -comparisonResult : comparisonResult;
+			});
 		}
 
 		model.addAttribute("details", details);
@@ -113,47 +134,48 @@ public class FormDetailController {
 	@GetMapping(Constants.EDIT_DETAIL)
 	public String showEditForm(@RequestParam("id") int id, Model model, HttpSession session) {
 		logger.info("GET request to edit form detail with ID: {}");
-		User user = (User) session.getAttribute("loggedInUser");
-		if (user == null) {
+		UserDTO userDto = (UserDTO) session.getAttribute("loggedInUser");
+		if (userDto == null) {
 			logger.warn(Constants.MSG_USER_NOT_LOGGED_IN);
 			return "redirect:" + Constants.LOGIN;
 		}
 
-		FormDetail formDetail = formDetailService.getFormDetailById(id);
-		if (formDetail == null) {
+		FormDetailDTO formDetailDto = formDetailService.getFormDetailById(id);
+		if (formDetailDto == null) {
 			logger.warn(String.format(Constants.MSG_FORM_DETAIL_NOT_FOUND, id));
 			return "redirect:" + Constants.VIEW_ALL;
 		}
 
-		model.addAttribute("formDetail", formDetail);
+		model.addAttribute("formDetail", formDetailDto);
 		return Constants.EDIT_FORM;
 	}
 
 	@PostMapping(Constants.UPDATE_DETAILS)
-	public String updateDetails(@ModelAttribute FormDetail formDetail, @RequestParam("banner") MultipartFile banner,
+	public String updateDetails(@ModelAttribute FormDetailDTO formDetailDto,
+			@RequestParam("banner") MultipartFile banner,
 			@RequestParam(value = "isPremium", required = false) boolean isPremium, HttpSession session)
 			throws IOException {
 		logger.info("POST request to update form detail with ID: {}");
 
-		FormDetail existingFormDetail = formDetailService.getFormDetailById(formDetail.getId());
+		FormDetailDTO existingFormDetailDto = formDetailService.getFormDetailById(formDetailDto.getId());
 
-		if (existingFormDetail == null) {
-			logger.warn(String.format(Constants.MSG_FORM_DETAIL_NOT_FOUND, formDetail.getId()));
+		if (existingFormDetailDto == null) {
+			logger.warn(String.format(Constants.MSG_FORM_DETAIL_NOT_FOUND, formDetailDto.getId()));
 			return "redirect:" + Constants.VIEW_ALL;
 		}
 
-		formDetail.setUser(existingFormDetail.getUser());
+		formDetailDto.setUser(existingFormDetailDto.getUser());
 
 		if (banner != null && !banner.isEmpty()) {
-			formDetail.setBanner(banner.getBytes());
-			formDetail.setContentType(banner.getContentType());
+			formDetailDto.setBanner(banner.getBytes());
+			formDetailDto.setContentType(banner.getContentType());
 		} else {
-			formDetail.setBanner(existingFormDetail.getBanner());
-			formDetail.setContentType(existingFormDetail.getContentType());
+			formDetailDto.setBanner(existingFormDetailDto.getBanner());
+			formDetailDto.setContentType(existingFormDetailDto.getContentType());
 		}
 
-		formDetail.setPremium(isPremium);
-		formDetailService.updateFormDetail(formDetail);
+		formDetailDto.setPremium(isPremium);
+		formDetailService.updateFormDetail(formDetailDto);
 
 		return "redirect:" + Constants.VIEW_ALL;
 	}

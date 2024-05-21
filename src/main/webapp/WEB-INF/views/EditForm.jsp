@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page import="com.div.pojo.User" %>
+<%@ page import="com.div.dto.UserDTO" %>
 <%@page isELIgnored="false"%>
 <%@ page import="com.div.util.ImageUtil"%>
 <!DOCTYPE html>
@@ -10,7 +10,7 @@
 </head>
 <body>
     <h2>Edit Details</h2>
-    <% User user = (User) session.getAttribute("loggedInUser"); %>
+    <% UserDTO user = (UserDTO) session.getAttribute("loggedInUser"); %>
     <h3>Welcome, <%= user.getUsername() %></h3>
     
     <form action="updateDetails" method="post" enctype="multipart/form-data">

@@ -35,13 +35,12 @@
 <body>
     <h2>View All Details</h2>
     
-    <!-- Search Form -->
-    <form action="viewAll" method="get">
+     <form action="viewAll" method="get">
         <label for="searchTitle">Search by Title:</label>
         <input type="text" id="searchTitle" name="searchTitle" value="${param.searchTitle}">
         <input type="submit" value="Search">
     </form>
-    
+
     <table border="1">
         <thead>
             <tr>
@@ -92,7 +91,10 @@
                             <img src="${ImageUtil.getBase64EncodedImage(detail.banner, detail.contentType)}" width="120" height="100" />
                         </c:if>
                     </td>
-                    <td><a href="deleteDetail?id=${detail.id}" class="btn-delete">Delete</a> <a href="editDetail?id=${detail.id}" class="btn-edit">Edit</a></td>
+                    <td>
+                        <a href="deleteDetail?id=${detail.id}" class="btn-delete">Delete</a>
+                        <a href="editDetail?id=${detail.id}" class="btn-edit">Edit</a>
+                    </td>
                 </tr>
             </c:forEach>
         </tbody>
