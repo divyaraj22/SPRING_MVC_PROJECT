@@ -27,7 +27,7 @@ public class FormDetailDAO extends GenericDAO<FormDetail, Integer> {
 		});
 	}
 
-	public List<FormDetail> findFreeAccessWithExpiry(Date today) {
+	public List<FormDetail> findFreeAccessWithExpiry(Date today) { 
 		return hibernateTemplate.execute(session -> {
 			TypedQuery<FormDetail> query = session.createQuery(
 					"FROM FormDetail WHERE accessCategory = 'free' AND freeViewExpiry = :today", FormDetail.class);
@@ -38,5 +38,19 @@ public class FormDetailDAO extends GenericDAO<FormDetail, Integer> {
 
 	public void update(FormDetail formDetail) {
 		hibernateTemplate.update(formDetail);
+	}
+	public List<FormDetail> searchByTitle(String title) {
+	    return hibernateTemplate.execute(session -> {
+	        TypedQuery<FormDetail> query = session.createQuery("FROM FormDetail WHERE title LIKE :title", FormDetail.class);
+	        query.setParameter("title", "%" + title + "%");
+	        return query.getResultList();
+	    });
+	}
+	public List<FormDetail> getSortedFormDetails(String sortField, String sortOrder) {
+	    return hibernateTemplate.execute(session -> {
+	        String queryStr = "FROM FormDetail ORDER BY " + sortField + " " + sortOrder;
+	        TypedQuery<FormDetail> query = session.createQuery(queryStr, FormDetail.class);
+	        return query.getResultList();
+	    });
 	}
 }

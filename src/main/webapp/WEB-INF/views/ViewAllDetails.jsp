@@ -8,18 +8,75 @@
 <html>
 <head>
     <title>View All Details</title>
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {background-color: #f1f1f1}
+        .dropdown:hover .dropdown-content {display: block;}
+        .dropdown:hover .dropbtn {background-color: #334FFF}
+    </style>
 </head>
 <body>
     <h2>View All Details</h2>
-
+    
+    <!-- Search Form -->
+    <form action="viewAll" method="get">
+        <label for="searchTitle">Search by Title:</label>
+        <input type="text" id="searchTitle" name="searchTitle" value="${param.searchTitle}">
+        <input type="submit" value="Search">
+    </form>
+    
     <table border="1">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Public URL</th>
+                <th>
+                    Title
+                    <div class="dropdown">
+                        <button class="dropbtn">Sort</button>
+                        <div class="dropdown-content">
+                            <a href="viewAll?sortField=title&sortOrder=asc">Ascending</a>
+                            <a href="viewAll?sortField=title&sortOrder=desc">Descending</a>
+                        </div>
+                    </div>
+                </th>
+                <th>
+                    Public URL
+                    <div class="dropdown">
+                        <button class="dropbtn">Sort</button>
+                        <div class="dropdown-content">
+                            <a href="viewAll?sortField=publicURL&sortOrder=asc">Ascending</a>
+                            <a href="viewAll?sortField=publicURL&sortOrder=desc">Descending</a>
+                        </div>
+                    </div>
+                </th>
+                <th>
+                    Access Category
+                    <div class="dropdown">
+                        <button class="dropbtn">Sort</button>
+                        <div class="dropdown-content">
+                            <a href="viewAll?sortField=accessCategory&sortOrder=asc">Ascending</a>
+                            <a href="viewAll?sortField=accessCategory&sortOrder=desc">Descending</a>
+                        </div>
+                    </div>
+                </th>
                 <th>Published Date</th>
                 <th>Banner</th>
-                <th>Access Category</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -28,16 +85,14 @@
                 <tr>
                     <td>${detail.title}</td>
                     <td>${detail.publicURL}</td>
+                    <td>${detail.accessCategory}</td>
                     <td><fmt:formatDate value="${detail.publishedDate}" pattern="yyyy-MM-dd" /></td>
                     <td>
                         <c:if test="${not empty detail.banner}">
                             <img src="${ImageUtil.getBase64EncodedImage(detail.banner, detail.contentType)}" width="120" height="100" />
                         </c:if>
                     </td>
-                    <td>${detail.accessCategory}</td>
-                    <td><a href="deleteDetail?id=${detail.id}"
-						class="btn-delete">Delete</a> <a
-						href="editDetail?id=${detail.id}" class="btn-edit">Edit</a></td>
+                    <td><a href="deleteDetail?id=${detail.id}" class="btn-delete">Delete</a> <a href="editDetail?id=${detail.id}" class="btn-edit">Edit</a></td>
                 </tr>
             </c:forEach>
         </tbody>

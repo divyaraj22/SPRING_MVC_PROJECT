@@ -86,7 +86,10 @@ public class FormDetailController {
 	}
 
 	@GetMapping(Constants.VIEW_ALL)
-	public String viewAllDetails(Model model, HttpSession session) {
+	public String viewAllDetails(@RequestParam(value = "searchTitle", required = false) String searchTitle,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder, Model model, HttpSession session) {
+
 		logger.info("GET request to view all details");
 		User user = (User) session.getAttribute("loggedInUser");
 		if (user == null) {
@@ -94,7 +97,15 @@ public class FormDetailController {
 			return "redirect:" + Constants.LOGIN;
 		}
 
-		List<FormDetail> details = formDetailService.getFormDetailByUser(user);
+		List<FormDetail> details;
+		if (searchTitle != null && !searchTitle.isEmpty()) {
+			details = formDetailService.searchFormDetailsByTitle(searchTitle);
+		} else if (sortField != null && sortOrder != null) {
+			details = formDetailService.getSortedFormDetails(sortField, sortOrder);
+		} else {
+			details = formDetailService.getFormDetailByUser(user);
+		}
+
 		model.addAttribute("details", details);
 		return Constants.VIEW_ALL_DETAILS;
 	}

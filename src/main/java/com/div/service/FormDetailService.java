@@ -43,4 +43,12 @@ public class FormDetailService {
     public List<FormDetail> getFreeAccessWithExpiry(Date today) {
         return formDetailDAO.findFreeAccessWithExpiry(today);
     }
+    
+    public List<FormDetail> searchFormDetailsByTitle(String title) {
+        return formDetailDAO.searchByTitle(title);
+    }
+    
+    public List<FormDetail> getSortedFormDetails(String sortField, String sortOrder) {
+        return formDetailDAO.getSortedFormDetails(sortField, sortOrder);
+    }
 }

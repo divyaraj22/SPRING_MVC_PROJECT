@@ -15,7 +15,7 @@ public class SchedulerService {
 	@Autowired
 	private FormDetailDAO formDetailDAO;
 
-	@Scheduled(cron = "0 0 0 * * *")
+	@Scheduled(cron = "0 0 5 * * *")
 	@Transactional
 	public void checkAndUpdateAccessCategories() {
 		Date today = new Date(System.currentTimeMillis());
