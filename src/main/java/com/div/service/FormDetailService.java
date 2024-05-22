@@ -46,43 +46,8 @@ public class FormDetailService {
 		return formDetailDAO.findFreeAccessWithExpiry(today);
 	}
 
-	/*
-	 * public List<FormDetailDTO> searchFormDetailsByTitle(String title) { return
-	 * formDetailDAO.searchByTitle(title); }
-	 */
-
 	public List<FormDetailDTO> getUserFormDetails(UserDTO userDto, SearchCriteria searchCriteria) {
-		List<FormDetailDTO> details = formDetailDAO.findByUser(userDto);
-
-		// Apply search filter
-		if (searchCriteria.getSearchTitle() != null && !searchCriteria.getSearchTitle().isEmpty()) {
-			details = details.stream().filter(
-					detail -> detail.getTitle().toLowerCase().contains(searchCriteria.getSearchTitle().toLowerCase()))
-					.collect(Collectors.toList());
-		}
-
-		// Apply sorting to the filtered results
-		if (searchCriteria.getSortField() != null && searchCriteria.getSortOrder() != null) {
-			details.sort((detail1, detail2) -> {
-				int comparisonResult = 0;
-				switch (searchCriteria.getSortField()) {
-				case "title":
-					comparisonResult = detail1.getTitle().compareToIgnoreCase(detail2.getTitle());
-					break;
-				case "publicURL":
-					comparisonResult = detail1.getPublicURL().compareToIgnoreCase(detail2.getPublicURL());
-					break;
-				case "accessCategory":
-					comparisonResult = detail1.getAccessCategory().compareToIgnoreCase(detail2.getAccessCategory());
-					break;
-				default:
-					break;
-				}
-				return "desc".equals(searchCriteria.getSortOrder()) ? -comparisonResult : comparisonResult;
-			});
-		}
-
-		return details;
+		return formDetailDAO.findByUserWithCriteria(userDto, searchCriteria);
 	}
 
 }

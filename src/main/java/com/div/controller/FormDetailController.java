@@ -97,8 +97,17 @@ public class FormDetailController {
 			return "redirect:" + Constants.LOGIN;
 		}
 
+		// Set default sort field and order if not provided
+		if (searchCriteria.getSortField() == null || searchCriteria.getSortField().isEmpty()) {
+			searchCriteria.setSortField("title"); // default sort field
+		}
+		if (searchCriteria.getSortOrder() == null || searchCriteria.getSortOrder().isEmpty()) {
+			searchCriteria.setSortOrder("asc"); // default sort order
+		}
+
 		List<FormDetailDTO> details = formDetailService.getUserFormDetails(userDto, searchCriteria);
 		model.addAttribute("details", details);
+		model.addAttribute("searchCriteria", searchCriteria);
 		return Constants.VIEW_ALL_DETAILS;
 	}
 
