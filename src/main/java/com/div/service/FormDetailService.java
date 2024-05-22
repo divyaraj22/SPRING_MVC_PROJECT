@@ -9,78 +9,80 @@ import org.springframework.stereotype.Service;
 import com.div.dao.FormDetailDAO;
 import com.div.dto.FormDetailDTO;
 import com.div.dto.UserDTO;
+import com.div.pojo.SearchCriteria;
 
 @Service
 @Transactional
 public class FormDetailService {
 
-    @Autowired
-    private FormDetailDAO formDetailDAO;
+	@Autowired
+	private FormDetailDAO formDetailDAO;
 
-    public List<FormDetailDTO> getAllFormDetails() {
-        return formDetailDAO.findAll().stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
-    }
+	public List<FormDetailDTO> getAllFormDetails() {
+		return formDetailDAO.findAll().stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
+	}
 
-    public FormDetailDTO getFormDetailById(int id) {
-        return formDetailDAO.findOneDTO(id);
-    }
+	public FormDetailDTO getFormDetailById(int id) {
+		return formDetailDAO.findOneDTO(id);
+	}
 
-    public void saveFormDetail(FormDetailDTO formDetailDto) {
-        formDetailDAO.save(formDetailDto);
-    }
+	public void saveFormDetail(FormDetailDTO formDetailDto) {
+		formDetailDAO.save(formDetailDto);
+	}
 
-    public void updateFormDetail(FormDetailDTO formDetailDto) {
-        formDetailDAO.update(formDetailDto);
-    }
+	public void updateFormDetail(FormDetailDTO formDetailDto) {
+		formDetailDAO.update(formDetailDto);
+	}
 
-    public void deleteFormDetail(int id) {
-        formDetailDAO.deleteByIdDTO(id);
-    }	
+	public void deleteFormDetail(int id) {
+		formDetailDAO.deleteByIdDTO(id);
+	}
 
-    public List<FormDetailDTO> getFormDetailByUser(UserDTO userDto) {
-        return formDetailDAO.findByUser(userDto);
-    }
+	public List<FormDetailDTO> getFormDetailByUser(UserDTO userDto) {
+		return formDetailDAO.findByUser(userDto);
+	}
 
-    public List<FormDetailDTO> getFreeAccessWithExpiry(Date today) {
-        return formDetailDAO.findFreeAccessWithExpiry(today);
-    }
+	public List<FormDetailDTO> getFreeAccessWithExpiry(Date today) {
+		return formDetailDAO.findFreeAccessWithExpiry(today);
+	}
 
-    public List<FormDetailDTO> searchFormDetailsByTitle(String title) {
-        return formDetailDAO.searchByTitle(title);
-    }
+	/*
+	 * public List<FormDetailDTO> searchFormDetailsByTitle(String title) { return
+	 * formDetailDAO.searchByTitle(title); }
+	 */
 
-    public List<FormDetailDTO> getSortedFormDetails(String sortField, String sortOrder) {
-        return formDetailDAO.getSortedFormDetails(sortField, sortOrder);
-    }
-    public List<FormDetailDTO> getUserFormDetails(UserDTO userDto, String searchTitle, String sortField, String sortOrder) {
-        List<FormDetailDTO> details = formDetailDAO.findByUser(userDto);
+	public List<FormDetailDTO> getUserFormDetails(UserDTO userDto, SearchCriteria searchCriteria) {
+		List<FormDetailDTO> details = formDetailDAO.findByUser(userDto);
 
-        if (searchTitle != null && !searchTitle.isEmpty()) {
-            details = details.stream()
-                             .filter(detail -> detail.getTitle().toLowerCase().contains(searchTitle.toLowerCase()))
-                             .collect(Collectors.toList());
-        }
+		// Apply search filter
+		if (searchCriteria.getSearchTitle() != null && !searchCriteria.getSearchTitle().isEmpty()) {
+			details = details.stream().filter(
+					detail -> detail.getTitle().toLowerCase().contains(searchCriteria.getSearchTitle().toLowerCase()))
+					.collect(Collectors.toList());
+		}
 
-        if (sortField != null && sortOrder != null) {
-            details.sort((detail1, detail2) -> {
-                int comparisonResult = 0;
-                switch (sortField) {
-                    case "title":
-                        comparisonResult = detail1.getTitle().compareToIgnoreCase(detail2.getTitle());
-                        break;
-                    case "publicURL":
-                        comparisonResult = detail1.getPublicURL().compareToIgnoreCase(detail2.getPublicURL());
-                        break;
-                    case "accessCategory":
-                        comparisonResult = detail1.getAccessCategory().compareToIgnoreCase(detail2.getAccessCategory());
-                        break;
-                    default:
-                        break;
-                }
-                return "desc".equals(sortOrder) ? -comparisonResult : comparisonResult;
-            });
-        }
+		// Apply sorting to the filtered results
+		if (searchCriteria.getSortField() != null && searchCriteria.getSortOrder() != null) {
+			details.sort((detail1, detail2) -> {
+				int comparisonResult = 0;
+				switch (searchCriteria.getSortField()) {
+				case "title":
+					comparisonResult = detail1.getTitle().compareToIgnoreCase(detail2.getTitle());
+					break;
+				case "publicURL":
+					comparisonResult = detail1.getPublicURL().compareToIgnoreCase(detail2.getPublicURL());
+					break;
+				case "accessCategory":
+					comparisonResult = detail1.getAccessCategory().compareToIgnoreCase(detail2.getAccessCategory());
+					break;
+				default:
+					break;
+				}
+				return "desc".equals(searchCriteria.getSortOrder()) ? -comparisonResult : comparisonResult;
+			});
+		}
 
-        return details;
-    }
+		return details;
+	}
+
 }

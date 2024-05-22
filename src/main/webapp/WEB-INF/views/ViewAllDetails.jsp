@@ -35,9 +35,11 @@
 <body>
     <h2>View All Details</h2>
     
-     <form action="viewAll" method="get">
+    <form action="viewAll" method="get">
         <label for="searchTitle">Search by Title:</label>
-        <input type="text" id="searchTitle" name="searchTitle" value="${param.searchTitle}">
+        <input type="text" id="searchTitle" name="searchTitle" value="${searchCriteria.searchTitle}">
+        <input type="hidden" name="sortField" value="${searchCriteria.sortField}">
+        <input type="hidden" name="sortOrder" value="${searchCriteria.sortOrder}">
         <input type="submit" value="Search">
     </form>
 
@@ -49,8 +51,8 @@
                     <div class="dropdown">
                         <button class="dropbtn">Sort</button>
                         <div class="dropdown-content">
-                            <a href="viewAll?sortField=title&sortOrder=asc">Ascending</a>
-                            <a href="viewAll?sortField=title&sortOrder=desc">Descending</a>
+                            <a href="viewAll?searchTitle=${searchCriteria.searchTitle}&sortField=title&sortOrder=asc">Ascending</a>
+                            <a href="viewAll?searchTitle=${searchCriteria.searchTitle}&sortField=title&sortOrder=desc">Descending</a>
                         </div>
                     </div>
                 </th>
@@ -59,8 +61,8 @@
                     <div class="dropdown">
                         <button class="dropbtn">Sort</button>
                         <div class="dropdown-content">
-                            <a href="viewAll?sortField=publicURL&sortOrder=asc">Ascending</a>
-                            <a href="viewAll?sortField=publicURL&sortOrder=desc">Descending</a>
+                            <a href="viewAll?searchTitle=${searchCriteria.searchTitle}&sortField=publicURL&sortOrder=asc">Ascending</a>
+                            <a href="viewAll?searchTitle=${searchCriteria.searchTitle}&sortField=publicURL&sortOrder=desc">Descending</a>
                         </div>
                     </div>
                 </th>
@@ -69,8 +71,8 @@
                     <div class="dropdown">
                         <button class="dropbtn">Sort</button>
                         <div class="dropdown-content">
-                            <a href="viewAll?sortField=accessCategory&sortOrder=asc">Ascending</a>
-                            <a href="viewAll?sortField=accessCategory&sortOrder=desc">Descending</a>
+                            <a href="viewAll?searchTitle=${searchCriteria.searchTitle}&sortField=accessCategory&sortOrder=asc">Ascending</a>
+                            <a href="viewAll?searchTitle=${searchCriteria.searchTitle}&sortField=accessCategory&sortOrder=desc">Descending</a>
                         </div>
                     </div>
                 </th>

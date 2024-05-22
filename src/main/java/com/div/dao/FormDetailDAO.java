@@ -43,14 +43,15 @@ public class FormDetailDAO extends GenericDAO<FormDetail, Integer> {
         return formDetails.stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
     }
 
-    public List<FormDetailDTO> searchByTitle(String title) {
-        List<FormDetail> formDetails = hibernateTemplate.execute(session -> {
-            TypedQuery<FormDetail> query = session.createQuery("FROM FormDetail WHERE title LIKE :title", FormDetail.class);
-            query.setParameter("title", "%" + title + "%");
-            return query.getResultList();
-        });
-        return formDetails.stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
-    }
+	/*
+	 * public List<FormDetailDTO> searchByTitle(String title) { List<FormDetail>
+	 * formDetails = hibernateTemplate.execute(session -> { TypedQuery<FormDetail>
+	 * query = session.createQuery("FROM FormDetail WHERE title LIKE :title",
+	 * FormDetail.class); query.setParameter("title", "%" + title + "%"); return
+	 * query.getResultList(); }); return
+	 * formDetails.stream().map(FormDetailDTO::fromModel).collect(Collectors.toList(
+	 * )); }
+	 */
 
     public List<FormDetailDTO> getSortedFormDetails(String sortField, String sortOrder) {
         List<FormDetail> formDetails = hibernateTemplate.execute(session -> {

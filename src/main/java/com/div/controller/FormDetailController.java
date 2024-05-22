@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.div.dto.FormDetailDTO;
 import com.div.dto.UserDTO;
+import com.div.pojo.SearchCriteria;
 import com.div.constantsURL.Constants;
 import com.div.service.FormDetailService;
 import com.div.service.SchedulerService;
@@ -88,10 +89,7 @@ public class FormDetailController {
 	}
 
 	@GetMapping(Constants.VIEW_ALL)
-	public String viewAllDetails(@RequestParam(value = "searchTitle", required = false) String searchTitle,
-			@RequestParam(value = "sortField", required = false) String sortField,
-			@RequestParam(value = "sortOrder", required = false) String sortOrder, Model model, HttpSession session) {
-
+	public String viewAllDetails(SearchCriteria searchCriteria, Model model, HttpSession session) {
 		logger.info("GET request to view all details");
 		UserDTO userDto = (UserDTO) session.getAttribute("loggedInUser");
 		if (userDto == null) {
@@ -99,34 +97,7 @@ public class FormDetailController {
 			return "redirect:" + Constants.LOGIN;
 		}
 
-		List<FormDetailDTO> details = formDetailService.getFormDetailByUser(userDto);
-
-		if (searchTitle != null && !searchTitle.isEmpty()) {
-			details = details.stream()
-					.filter(detail -> detail.getTitle().toLowerCase().contains(searchTitle.toLowerCase()))
-					.collect(Collectors.toList());
-		}
-
-		if (sortField != null && sortOrder != null) {
-			details.sort((detail1, detail2) -> {
-				int comparisonResult = 0;
-				switch (sortField) {
-				case "title":
-					comparisonResult = detail1.getTitle().compareToIgnoreCase(detail2.getTitle());
-					break;
-				case "publicURL":
-					comparisonResult = detail1.getPublicURL().compareToIgnoreCase(detail2.getPublicURL());
-					break;
-				case "accessCategory":
-					comparisonResult = detail1.getAccessCategory().compareToIgnoreCase(detail2.getAccessCategory());
-					break;
-				default:
-					break;
-				}
-				return "desc".equals(sortOrder) ? -comparisonResult : comparisonResult;
-			});
-		}
-
+		List<FormDetailDTO> details = formDetailService.getUserFormDetails(userDto, searchCriteria);
 		model.addAttribute("details", details);
 		return Constants.VIEW_ALL_DETAILS;
 	}
