@@ -3,7 +3,12 @@ package com.div.dao;
 import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,49 +21,49 @@ import com.div.dto.UserDTO;
 @Repository
 public class FormDetailDAO extends GenericDAO<FormDetail, Integer> {
 
+	private HibernateTemplate hibernateTemplate;
+	private SessionFactory sessionFactory;
+
 	@Autowired
-	public FormDetailDAO(HibernateTemplate hibernateTemplate) {
+	public FormDetailDAO(HibernateTemplate hibernateTemplate, SessionFactory sessionFactory) {
 		super(FormDetail.class);
 		this.hibernateTemplate = hibernateTemplate;
+		this.sessionFactory = sessionFactory;
 	}
-
-	private HibernateTemplate hibernateTemplate;
 
 	public List<FormDetailDTO> findByUser(UserDTO userDto) {
 		User user = userDto.toModel();
 		List<FormDetail> formDetails = hibernateTemplate.execute(session -> {
-			TypedQuery<FormDetail> query = session.createQuery("FROM FormDetail WHERE user = :user", FormDetail.class);
-			query.setParameter("user", user);
-			return query.getResultList();
+			CriteriaBuilder cb = session.getCriteriaBuilder();
+			CriteriaQuery<FormDetail> cq = cb.createQuery(FormDetail.class);
+			Root<FormDetail> root = cq.from(FormDetail.class);
+			cq.select(root).where(cb.equal(root.get("user"), user));
+			return session.createQuery(cq).getResultList();
 		});
 		return formDetails.stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
 	}
 
 	public List<FormDetailDTO> findFreeAccessWithExpiry(Date today) {
 		List<FormDetail> formDetails = hibernateTemplate.execute(session -> {
-			TypedQuery<FormDetail> query = session.createQuery(
-					"FROM FormDetail WHERE accessCategory = 'free' AND freeViewExpiry = :today", FormDetail.class);
-			query.setParameter("today", today);
-			return query.getResultList();
+			CriteriaBuilder cb = session.getCriteriaBuilder();
+			CriteriaQuery<FormDetail> cq = cb.createQuery(FormDetail.class);
+			Root<FormDetail> root = cq.from(FormDetail.class);
+			cq.select(root).where(
+					cb.and(cb.equal(root.get("accessCategory"), "free"), cb.equal(root.get("freeViewExpiry"), today)));
+			return session.createQuery(cq).getResultList();
 		});
 		return formDetails.stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
 	}
 
-	/*
-	 * public List<FormDetailDTO> searchByTitle(String title) { List<FormDetail>
-	 * formDetails = hibernateTemplate.execute(session -> { TypedQuery<FormDetail>
-	 * query = session.createQuery("FROM FormDetail WHERE title LIKE :title",
-	 * FormDetail.class); query.setParameter("title", "%" + title + "%"); return
-	 * query.getResultList(); }); return
-	 * formDetails.stream().map(FormDetailDTO::fromModel).collect(Collectors.toList(
-	 * )); }
-	 */
-
 	public List<FormDetailDTO> getSortedFormDetails(String sortField, String sortOrder) {
 		List<FormDetail> formDetails = hibernateTemplate.execute(session -> {
-			String queryStr = "FROM FormDetail ORDER BY " + sortField + " " + sortOrder;
-			TypedQuery<FormDetail> query = session.createQuery(queryStr, FormDetail.class);
-			return query.getResultList();
+			CriteriaBuilder cb = session.getCriteriaBuilder();
+			CriteriaQuery<FormDetail> cq = cb.createQuery(FormDetail.class);
+			Root<FormDetail> root = cq.from(FormDetail.class);
+			Order order = "asc".equalsIgnoreCase(sortOrder) ? cb.asc(root.get(sortField))
+					: cb.desc(root.get(sortField));
+			cq.select(root).orderBy(order);
+			return session.createQuery(cq).getResultList();
 		});
 		return formDetails.stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
 	}
@@ -83,26 +88,26 @@ public class FormDetailDAO extends GenericDAO<FormDetail, Integer> {
 	public List<FormDetailDTO> findByUserWithCriteria(UserDTO userDto, SearchCriteria searchCriteria) {
 		User user = userDto.toModel();
 		return hibernateTemplate.execute(session -> {
-			StringBuilder queryBuilder = new StringBuilder("FROM FormDetail WHERE user = :user");
+			CriteriaBuilder cb = session.getCriteriaBuilder();
+			CriteriaQuery<FormDetail> cq = cb.createQuery(FormDetail.class);
+			Root<FormDetail> root = cq.from(FormDetail.class);
+
+			Predicate predicate = cb.equal(root.get("user"), user);
 
 			if (searchCriteria.getSearchTitle() != null && !searchCriteria.getSearchTitle().isEmpty()) {
-				queryBuilder.append(" AND title LIKE :searchTitle");
+				predicate = cb.and(predicate, cb.like(root.get("title"), "%" + searchCriteria.getSearchTitle() + "%"));
 			}
+
+			cq.where(predicate);
 
 			if (searchCriteria.getSortField() != null && searchCriteria.getSortOrder() != null) {
-				queryBuilder.append(" ORDER BY ").append(searchCriteria.getSortField()).append(" ")
-						.append(searchCriteria.getSortOrder());
+				Order order = "asc".equalsIgnoreCase(searchCriteria.getSortOrder())
+						? cb.asc(root.get(searchCriteria.getSortField()))
+						: cb.desc(root.get(searchCriteria.getSortField()));
+				cq.orderBy(order);
 			}
 
-			TypedQuery<FormDetail> query = session.createQuery(queryBuilder.toString(), FormDetail.class);
-			query.setParameter("user", user);
-
-			if (searchCriteria.getSearchTitle() != null && !searchCriteria.getSearchTitle().isEmpty()) {
-				query.setParameter("searchTitle", "%" + searchCriteria.getSearchTitle() + "%");
-			}
-
-			List<FormDetail> formDetails = query.getResultList();
-			return formDetails.stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
-		});
+			return session.createQuery(cq).getResultList();
+		}).stream().map(FormDetailDTO::fromModel).collect(Collectors.toList());
 	}
 }

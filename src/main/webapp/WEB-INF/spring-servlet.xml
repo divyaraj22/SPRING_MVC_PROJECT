@@ -15,31 +15,36 @@
            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <!-- Enable transaction management -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!-- Use HibernateTransactionManager instead of JpaTransactionManager -->
+    <bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="factory" />
+    </bean>
 
     <!-- Enable scheduling -->
-    <task:annotation-driven/>
+    <task:annotation-driven />
 
     <!-- Component scanning -->
-    <context:component-scan base-package="com.div"/>
+    <context:component-scan base-package="com.div" />
 
     <!-- Data source configuration -->
     <bean name="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${spring.datasource.driver-class-name}"/>
-        <property name="url" value="${spring.datasource.url}"/>
-        <property name="username" value="${spring.datasource.username}"/>
-        <property name="password" value="${spring.datasource.password}"/>
+        <property name="driverClassName" value="${spring.datasource.driver-class-name}" />
+        <property name="url" value="${spring.datasource.url}" />
+        <property name="username" value="${spring.datasource.username}" />
+        <property name="password" value="${spring.datasource.password}" />
     </bean>
 
     <!-- View resolver configuration -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/views/"/>
-        <property name="suffix" value=".jsp"/>
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
     </bean>
 
     <!-- Hibernate session factory configuration -->
     <bean name="factory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="dataSource" ref="ds"/>
+        <property name="dataSource" ref="ds" />
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${spring.jpa.properties.hibernate.dialect}</prop>
@@ -57,17 +62,12 @@
 
     <!-- Hibernate template configuration -->
     <bean name="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
-        <property name="sessionFactory" ref="factory"/>
-    </bean>
-
-    <!-- Transaction manager configuration -->
-    <bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="factory"/>
+        <property name="sessionFactory" ref="factory" />
     </bean>
 
     <!-- Multipart resolver configuration -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="10485760"/>
+        <property name="maxUploadSize" value="10485760" />
     </bean>
 
     <!-- Property sources placeholder configurer -->

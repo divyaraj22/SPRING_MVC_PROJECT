@@ -60,5 +60,8 @@
     <form action="viewAll" method="get" style="text-align: center; margin-top: 20px;">
         <input type="submit" value="View All"/>
     </form>
+        <form action="upload-csv" method="get" style="text-align: center; margin-top: 20px;">
+        <input type="submit" value="Add CSV File"/>
+    </form>
 </body>
 </html>
