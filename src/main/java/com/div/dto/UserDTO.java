@@ -8,6 +8,17 @@ public class UserDTO {
     private String password;
     private String email;
 
+    // Default constructor
+    public UserDTO() {
+    }
+
+    // Constructor with parameters
+    public UserDTO(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+
     // Getters and Setters
     public int getId() {
         return id;

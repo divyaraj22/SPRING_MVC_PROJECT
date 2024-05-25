@@ -4,7 +4,7 @@ public class Constants {
 
     // UserController paths
     public static final String GET_SIGNUP = "/signup"; 
-    public static final String POST_SIGNUP = "/signup";
+    public static final String POST_SIGNUP = "/signup/submit";
     public static final String LOGIN = "/Login";
     
     // UserController messages
